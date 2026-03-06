@@ -33,7 +33,9 @@ cp "$SCRIPT_DIR/service/$SERVICE_NAME/Contents/Info.plist" "$DEST/Contents/Info.
 
 # Substitute __INSTALL_DIR__ with the real path so the workflow can find the
 # script regardless of where the user cloned the repository.
-sed "s|__INSTALL_DIR__|$SCRIPT_DIR|g" "$TEMPLATE" > "$DEST/Contents/document.wflow"
+# Escape characters that are special in sed replacement strings (& and \).
+ESCAPED_SCRIPT_DIR=$(printf '%s\n' "$SCRIPT_DIR" | sed 's/[&\\]/\\&/g')
+sed "s|__INSTALL_DIR__|$ESCAPED_SCRIPT_DIR|g" "$TEMPLATE" > "$DEST/Contents/document.wflow"
 
 # Notify the Services subsystem of the new workflow.
 # pbs (Pasteboard Server) maintains the Services menu registry.

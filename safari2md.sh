@@ -17,9 +17,10 @@ OUTPUT_FILE=""
 COPY_CLIPBOARD=false
 
 usage() {
-    echo "Usage: $0 [-o <output_file>] [-c]"
+    echo "Usage: $0 [-o <output_file>] [-c] [-h]"
     echo "  -o <file>   Write Markdown to <file>"
     echo "  -c          Copy Markdown to clipboard"
+    echo "  -h          Show this help message"
     exit 1
 }
 
@@ -49,7 +50,7 @@ PAGE_HTML=$(osascript -e \
     'tell application "Safari" to return do JavaScript "document.documentElement.outerHTML" in current tab of front window')
 
 # Convert HTML to Markdown via the Python helper.
-MARKDOWN=$(echo "$PAGE_HTML" | python3 "$SCRIPT_DIR/convert.py" "$PAGE_URL" "$PAGE_TITLE")
+MARKDOWN=$(printf '%s' "$PAGE_HTML" | python3 "$SCRIPT_DIR/convert.py" "$PAGE_URL" "$PAGE_TITLE")
 
 # Output
 if [[ -n "$OUTPUT_FILE" ]]; then

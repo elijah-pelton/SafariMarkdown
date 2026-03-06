@@ -65,7 +65,7 @@
 				<key>ActionParameters</key>
 				<dict>
 					<key>COMMAND_STRING</key>
-					<string>"__INSTALL_DIR__/safari2md.sh" -c
+					<string>"__INSTALL_DIR__/safari2md.sh" -c &amp;&amp; \
 osascript -e 'display notification "Current Safari page copied as Markdown to the clipboard." with title "SafariMarkdown"'</string>
 					<key>CheckedForUserDefaultShell</key>
 					<true/>
