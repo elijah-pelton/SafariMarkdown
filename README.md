@@ -2,6 +2,8 @@
 
 Convert the current Safari page to Markdown — entirely on your Mac, no server required.
 
+Trigger it from the **terminal**, or straight from the **right-click menu** (macOS Services).
+
 ## Requirements
 
 - macOS with Safari
@@ -15,11 +17,22 @@ cd SafariMarkdown
 ./install.sh
 ```
 
-`install.sh` installs the [`html2text`](https://pypi.org/project/html2text/) Python package and marks `safari2md.sh` as executable.
+`install.sh`:
+1. Installs the [`html2text`](https://pypi.org/project/html2text/) Python package.
+2. Marks `safari2md.sh` as executable.
+3. Installs a **macOS Quick Action** (Service) to `~/Library/Services/` so
+   "Page to Markdown" appears in the right-click menu inside Safari (and any
+   other app).
 
-### Optional alias
+> **First-run prompt:** macOS may ask you to grant permission for the Service
+> to control Safari via AppleScript. Click **OK** when prompted.
 
-Add a convenient alias to your shell profile so you can run `safari2md` from anywhere:
+### If the menu item doesn't appear
+
+Go to **System Settings → Keyboard → Keyboard Shortcuts → Services** and make
+sure **"Page to Markdown"** is enabled under the *General* section.
+
+### Optional terminal alias
 
 ```bash
 echo "alias safari2md='$(pwd)/safari2md.sh'" >> ~/.zshrc
@@ -28,7 +41,19 @@ source ~/.zshrc
 
 ## Usage
 
-Open a page in Safari, then run one of the following commands from the project directory (or via the alias):
+### Right-click menu (macOS Service)
+
+1. Open any webpage in Safari.
+2. Right-click anywhere on the page → **Services → Page to Markdown**.
+3. The Markdown is copied to your clipboard automatically.
+4. Paste it anywhere — a note, a chat window, or an AI prompt.
+
+You can also access the service from the **Safari menu bar**:
+Safari → Services → Page to Markdown.
+
+### Terminal
+
+Open a page in Safari, then run one of the following commands:
 
 | Command | Effect |
 |---------|--------|
@@ -44,17 +69,30 @@ $ ./safari2md.sh -c
 Copied to clipboard
 ```
 
-Paste the result anywhere — a note, a chat window, or directly into an AI prompt.
-
 > **Note:** The script uses AppleScript to read the rendered HTML from the
 > active Safari tab, so it captures the page exactly as Safari sees it
 > (JavaScript-rendered content included).
 
 ## How it works
 
-1. `safari2md.sh` uses AppleScript to ask Safari for the current tab's URL,
-   title, and rendered HTML.
+1. `safari2md.sh` (or the Quick Action) uses AppleScript to ask Safari for the
+   current tab's URL, title, and rendered HTML.
 2. The HTML is piped to `convert.py`, which uses `html2text` to produce clean
    Markdown.
 3. The result is printed to stdout, saved to a file, or sent to the clipboard —
-   depending on the flags you pass.
+   depending on how you invoked it.
+
+## File structure
+
+```
+SafariMarkdown/
+├── safari2md.sh          # Main conversion script (CLI entry point)
+├── convert.py            # HTML → Markdown converter (uses html2text)
+├── requirements.txt      # Python dependency: html2text
+├── install.sh            # One-step installer (deps + Quick Action)
+└── service/
+    └── SafariMarkdown.workflow/   # macOS Quick Action template
+        └── Contents/
+            ├── Info.plist         # Service metadata
+            └── document.wflow     # Automator workflow (path filled by install.sh)
+```
