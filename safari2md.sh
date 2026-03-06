@@ -50,7 +50,11 @@ PAGE_HTML=$(osascript -e \
     'tell application "Safari" to return do JavaScript "document.documentElement.outerHTML" in current tab of front window')
 
 # Convert HTML to Markdown via the Python helper.
-MARKDOWN=$(printf '%s' "$PAGE_HTML" | python3 "$SCRIPT_DIR/convert.py" "$PAGE_URL" "$PAGE_TITLE")
+PYTHON="$SCRIPT_DIR/.venv/bin/python3"
+if [[ ! -x "$PYTHON" ]]; then
+    PYTHON=python3
+fi
+MARKDOWN=$(printf '%s' "$PAGE_HTML" | "$PYTHON" "$SCRIPT_DIR/convert.py" "$PAGE_URL" "$PAGE_TITLE")
 
 # Output
 if [[ -n "$OUTPUT_FILE" ]]; then

@@ -19,8 +19,11 @@ SERVICES_DIR="$HOME/Library/Services"
 DEST="$SERVICES_DIR/$SERVICE_NAME"
 TEMPLATE="$SCRIPT_DIR/service/$SERVICE_NAME/Contents/document.wflow"
 
+echo "==> Creating Python virtual environment..."
+python3 -m venv "$SCRIPT_DIR/.venv"
+
 echo "==> Installing Python dependencies..."
-pip3 install --user -r "$SCRIPT_DIR/requirements.txt"
+"$SCRIPT_DIR/.venv/bin/pip" install -r "$SCRIPT_DIR/requirements.txt"
 
 echo "==> Making safari2md.sh executable..."
 chmod +x "$SCRIPT_DIR/safari2md.sh"
